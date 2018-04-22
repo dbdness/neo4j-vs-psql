@@ -13,7 +13,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	count := neo4jdb.GetDepthCount("Genia Crist", 1)
+	count := neo4jdb.GetDepthCount("Genia Crist", "1")
 
 	fmt.Println(count)
 	
