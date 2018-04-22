@@ -3,6 +3,7 @@ package neo4jdb
 import (
 	driver "github.com/johnnadratowski/golang-neo4j-bolt-driver"
 	"log"
+	"strconv"
 )
 
 const connString  = "bolt://neo4j:class@localhost:7687"
@@ -14,12 +15,14 @@ func Open() (driver.Conn, error) {
 	return conn, err
 }
 
-func GetDepthCount(name string, depth string) int64 {
+func GetDepthCount(name string, depth int) int64 {
 	if conn == nil{
 		log.Panic("Neo4j connection null. Did you forget to call Open()?")
 	}
 
-	cypher := `MATCH (:Person{name:{name}})-[*`+depth+`]->(other) RETURN count(other)`
+	depthStr := strconv.Itoa(depth)
+
+	cypher := `MATCH (:Person{name:{name}})-[*`+depthStr+`]->(other) RETURN count(other)`
 
 	data, _, _, err := conn.QueryNeoAll(cypher, map[string]interface{}{"name":name})
 
