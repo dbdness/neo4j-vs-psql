@@ -31,6 +31,7 @@ func psqlQuery(){
 	}
 	defer conn.Close()
 
+	//Genia Crist's id is 20653.
 	count := psqldb.GetDepthCount("20653", 1)
 
 	fmt.Println(count)
