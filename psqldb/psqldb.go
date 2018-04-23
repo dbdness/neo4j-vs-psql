@@ -9,8 +9,6 @@ import (
 
 const connString = "user=postgres dbname=postgres sslmode=disable"
 
-
-
 var db *sql.DB
 
 func Open() (*sql.DB, error) {
@@ -20,6 +18,8 @@ func Open() (*sql.DB, error) {
 }
 
 func GetDepthCount(name string, depth int) int {
+	checkConn()
+
 	var query string
 	switch depth {
 	case 1:
@@ -50,4 +50,32 @@ func GetDepthCount(name string, depth int) int {
 	}
 
 	return count
+}
+
+func GetRandomName(amount int) []string {
+	checkConn()
+
+	randoms := make([]string, amount)
+
+	rows, err := db.Query(`SELECT name FROM person ORDER BY random() LIMIT $1;`, amount)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	for i := 0; i < amount; i++ {
+		if rows.Next() == false {
+			break
+		}
+		var name string
+		rows.Scan(&name)
+		randoms[i] = name
+	}
+
+	return randoms
+}
+
+func checkConn(){
+	if db == nil{
+		log.Panic("Neo4j connection null. Did you forget to call Open()?")
+	}
 }
