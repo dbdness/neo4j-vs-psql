@@ -6,49 +6,61 @@ import (
 	"log"
 	"fmt"
 	"time"
+	"database/sql"
+	"github.com/johnnadratowski/golang-neo4j-bolt-driver"
 )
 
 func main() {
-	//neo4jQuery()
-	//psqlQuery()
-
-	/*
 	conn, err := psqldb.Open()
 	if err != nil{
 		log.Panic(err)
 	}
 	defer conn.Close()
 
+	//Doesn't matter what db we get the random names from
 	names := psqldb.GetRandomName(20)
+	//names := neo4jdb.GetRandomName(20)
 
-	for _, name := range names{
-		count := psqldb.GetDepthCount(name, 1)
-		fmt.Println(count)
-	}
-	*/
-	fmt.Println("Starting Neo4j benchmarks...")
-	neo4jBenchmark(1)
+	//fmt.Println("Starting Neo4j benchmarks...")
+	//neo4jBenchmark(1)
+	fmt.Println("Starting PSQL benchmarks...")
+	psqlBenchmark(conn,3, names)
 }
 
-func neo4jBenchmark(depth int) {
-	conn, err := neo4jdb.Open()
-	if err != nil {
-		log.Panic(err)
-	}
-	defer conn.Close()
-
+func neo4jBenchmark(conn golangNeo4jBoltDriver.Conn, depth int, names []string) {
 	durations := make([]float64, 0)
-	names := neo4jdb.GetRandomName(20)
 
 	for _, name := range names {
 		startTime := time.Now()
 		neo4jdb.GetDepthCount(name, depth)
+		fmt.Print(".")
 		elapsed := time.Since(startTime)
 		durations = append(durations, elapsed.Seconds())
 	}
 
 	log.Println(durations)
-	fmt.Printf("Average time for depth %d:\n", depth)
+	fmt.Printf("\nAverage time for depth %d:\n", depth)
+	average := calcAverage(durations)
+	fmt.Println(average)
+
+	fmt.Printf("Median time for depth %d:\n", depth)
+	median := calcMedian(durations)
+	fmt.Println(median)
+}
+
+func psqlBenchmark(conn *sql.DB, depth int, names []string){
+	durations := make([]float64, 0)
+
+	for _, name := range names {
+		startTime := time.Now()
+		psqldb.GetDepthCount(name, depth)
+		fmt.Print(".")
+		elapsed := time.Since(startTime)
+		durations = append(durations, elapsed.Seconds())
+	}
+
+	log.Println(durations)
+	fmt.Printf("\nAverage time for depth %d:\n", depth)
 	average := calcAverage(durations)
 	fmt.Println(average)
 
