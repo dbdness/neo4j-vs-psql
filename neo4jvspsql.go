@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	//neo4jQuery()
+	neo4jQuery()
 	psqlQuery()
 }
 
@@ -19,7 +19,8 @@ func neo4jQuery(){
 	}
 	defer conn.Close()
 
-	count := neo4jdb.GetDepthCount("Genia Crist", 1)
+	fmt.Println("Starting NEO4J query...")
+	count := neo4jdb.GetDepthCount("Genia Crist", 2)
 
 	fmt.Println(count)
 }
@@ -31,8 +32,8 @@ func psqlQuery(){
 	}
 	defer conn.Close()
 
-	//Genia Crist's id is 20653.
-	count := psqldb.GetDepthCount("20653", 1)
+	fmt.Println("Starting PSQL query...")
+	count := psqldb.GetDepthCount("Genia Crist", 2)
 
 	fmt.Println(count)
 }
