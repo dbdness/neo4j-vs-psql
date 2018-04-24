@@ -120,7 +120,7 @@ With all of the above dependencies above settled, it's very simple to run the pr
 4. Execute the desired query on the built Go file. Simply state what database you want to benchmark, and what depth of endorsement you want to test:
 
    ```bash
-   $ ./neo4jvspsql --neo4j -3
+   $ ./neo4jvspsql --neo4j 3
    ```
 
    The above query will launch the experiment with the Neo4j database, and with depth three of endorsement.
@@ -128,7 +128,7 @@ With all of the above dependencies above settled, it's very simple to run the pr
    Likewise, this query will launch the experiment with the PostgreSQL database, and with depth 5 of endorsement:
 
    ```bash
-   $ ./neo4jvspsql --psql -5
+   $ ./neo4jvspsql --psql 5
    ```
 
    You can choose any depth you want. 
