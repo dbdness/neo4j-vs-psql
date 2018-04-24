@@ -137,32 +137,6 @@ func psqlBenchmark(conn *sql.DB, depth int, names []string) {
 	fmt.Println(median)
 }
 
-func neo4jQuery() {
-	conn, err := neo4jdb.Open()
-	if err != nil {
-		log.Panic(err)
-	}
-	defer conn.Close()
-
-	fmt.Println("Starting NEO4J query...")
-	count := neo4jdb.GetDepthCount("Genia Crist", 5)
-
-	fmt.Println(count)
-}
-
-func psqlQuery() {
-	conn, err := psqldb.Open()
-	if err != nil {
-		log.Panic(err)
-	}
-	defer conn.Close()
-
-	fmt.Println("Starting PSQL query...")
-	count := psqldb.GetDepthCount("Genia Crist", 2)
-
-	fmt.Println(count)
-}
-
 func calcAverage(slice []float64) float64 {
 	var total float64
 	for _, value := range slice {
