@@ -94,15 +94,13 @@ func neo4jBenchmark(conn golangNeo4jBoltDriver.Conn, depth int, names []string) 
 
 	durations := make([]float64, 0)
 
-	var count int64
 	for _, name := range names {
 		startTime := time.Now()
-		count = neo4jdb.GetDepthCount(name, depth)
+		neo4jdb.GetDepthCount(name, depth)
 		fmt.Print(".") //Activity monitor
 		elapsed := time.Since(startTime)
 		durations = append(durations, round(elapsed.Seconds()))
 	}
-	log.Printf("\nLast count: %d", count)
 
 	//log.Println(durations)
 	fmt.Printf("\nAverage time for depth %d:\n", depth)
@@ -121,15 +119,13 @@ func psqlBenchmark(conn *sql.DB, depth int, names []string) {
 
 	durations := make([]float64, 0)
 
-	var count int64
 	for _, name := range names {
 		startTime := time.Now()
-		count = psqldb.GetDepthCount(name, depth)
+		psqldb.GetDepthCount(name, depth)
 		fmt.Print(".") //Activity monitor
 		elapsed := time.Since(startTime)
 		durations = append(durations, round(elapsed.Seconds()))
 	}
-	log.Printf("\nLast count: %d", count)
 
 	//log.Println(durations)
 	fmt.Printf("\nAverage time for depth %d:\n", depth)
