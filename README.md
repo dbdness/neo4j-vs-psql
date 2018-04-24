@@ -161,7 +161,7 @@ All execution times are in seconds.
 | Depth Four  |  0.70   |   0.82 |
 | Depth Five  |  7.33   |  10.45 |
 
-###PostgreSQL
+### PostgreSQL
 
 | Depth       | Average | Median |
 | ----------- | :-----: | -----: |
