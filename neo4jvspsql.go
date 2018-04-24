@@ -8,37 +8,100 @@ import (
 	"time"
 	"database/sql"
 	"github.com/johnnadratowski/golang-neo4j-bolt-driver"
+	"os"
+	"strconv"
 )
+
+// Randomly extracted names from the database.
+var randomNames = []string{
+	"Delena Linahan",
+	"Claude Beel",
+	"Svetlana Pongkhamsing",
+	"Pedro Panagakos",
+	"Norbert Elstad",
+	"Darnell Stlouis",
+	"Lenny Hendryx",
+	"Gerald Kotcher",
+	"Ana Lourence",
+	"Rudolph Beaushaw",
+	"Oma Gett",
+	"Tom Yerger",
+	"Terrilyn Steiniger",
+	"Allene Lorch",
+	"Jody Hyndman",
+	"Pablo Gunnerson",
+	"Coralie Ciminera",
+	"Ambrose Moulder",
+	"Danae Schnoke",
+	"Kenna Alston",
+}
 
 func main() {
 	conn, err := psqldb.Open()
-	if err != nil{
+	if err != nil {
 		log.Panic(err)
 	}
 	defer conn.Close()
 
-	//Doesn't matter what db we get the random names from
-	names := psqldb.GetRandomName(20)
-	//names := neo4jdb.GetRandomName(20)
+	userCommand := os.Args[1]
+	depthCommand := os.Args[2]
 
-	//fmt.Println("Starting Neo4j benchmarks...")
-	//neo4jBenchmark(1)
-	fmt.Println("Starting PSQL benchmarks...")
-	psqlBenchmark(conn,3, names)
+	switch userCommand {
+	case "--neo4j":
+		fmt.Println("Opening Neo4j connection...")
+		conn, err := neo4jdb.Open()
+		if err != nil {
+			log.Panic(err)
+		}
+		defer conn.Close()
+
+		depth, err := strconv.Atoi(depthCommand)
+		if err != nil {
+			log.Panic("Error: Wrong depth input")
+			fmt.Println("Shutting down...")
+		}
+
+		//names := neo4jdb.GetRandomName(20)
+		fmt.Println("Starting Neo4j benchmarks:")
+		neo4jBenchmark(conn, depth, randomNames)
+
+	case "--psql":
+		fmt.Println("Opening PSQL connection...")
+		conn, err := psqldb.Open()
+		if err != nil {
+			log.Panic(err)
+		}
+		defer conn.Close()
+
+		depth, err := strconv.Atoi(depthCommand)
+		if err != nil {
+			log.Panic("Error: Wrong depth input")
+			fmt.Println("Shutting down...")
+		}
+
+		//names := psqldb.GetRandomName(20)
+		fmt.Println("Starting PSQL benchmarks:")
+		psqlBenchmark(conn, depth, randomNames)
+	}
+
 }
 
 func neo4jBenchmark(conn golangNeo4jBoltDriver.Conn, depth int, names []string) {
+	if conn == nil {
+		log.Panic("Neo4j connection null. Did you forget to call Open()?")
+	}
+
 	durations := make([]float64, 0)
 
 	for _, name := range names {
 		startTime := time.Now()
 		neo4jdb.GetDepthCount(name, depth)
-		fmt.Print(".")
+		fmt.Print(".") //Activity monitor
 		elapsed := time.Since(startTime)
 		durations = append(durations, elapsed.Seconds())
 	}
 
-	log.Println(durations)
+	//log.Println(durations)
 	fmt.Printf("\nAverage time for depth %d:\n", depth)
 	average := calcAverage(durations)
 	fmt.Println(average)
@@ -48,18 +111,22 @@ func neo4jBenchmark(conn golangNeo4jBoltDriver.Conn, depth int, names []string) 
 	fmt.Println(median)
 }
 
-func psqlBenchmark(conn *sql.DB, depth int, names []string){
+func psqlBenchmark(conn *sql.DB, depth int, names []string) {
+	if conn == nil {
+		log.Panic("PSQL connection null. Did you forget to call Open()?")
+	}
+
 	durations := make([]float64, 0)
 
 	for _, name := range names {
 		startTime := time.Now()
 		psqldb.GetDepthCount(name, depth)
-		fmt.Print(".")
+		fmt.Print(".") //Activity monitor
 		elapsed := time.Since(startTime)
 		durations = append(durations, elapsed.Seconds())
 	}
 
-	log.Println(durations)
+	//log.Println(durations)
 	fmt.Printf("\nAverage time for depth %d:\n", depth)
 	average := calcAverage(durations)
 	fmt.Println(average)
@@ -93,11 +160,6 @@ func psqlQuery() {
 	count := psqldb.GetDepthCount("Genia Crist", 2)
 
 	fmt.Println(count)
-}
-
-func trackTime(start time.Time) float64 {
-	elapsed := time.Since(start)
-	return elapsed.Seconds()
 }
 
 func calcAverage(slice []float64) float64 {
