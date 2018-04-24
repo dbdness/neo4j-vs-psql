@@ -22,20 +22,27 @@ All execution times are in seconds.
 
 | Depth       | Average | Median |
 | ----------- | :-----: | -----: |
-| Depth one   |  0.47   |   0.44 |
-| Depth two   |  0.63   |   0.46 |
-| Depth three |  1.04   |   0.52 |
-| Depth Four  |  0.68   |   0.67 |
-| Depth Five  |         |        |
+| Depth one   |  0.38   |   0.37 |
+| Depth two   |  0.37   |   0.37 |
+| Depth three |  0.40   |   0.41 |
+| Depth Four  |  0.70   |   0.82 |
+| Depth Five  |  7.33   |  10.45 |
 
-### PostgreSQL
+###PostgreSQL
 
 | Depth       | Average | Median |
 | ----------- | :-----: | -----: |
-| Depth one   |         |        |
-| Depth two   |         |        |
-| Depth three |         |        |
-| Depth Four  |         |        |
-| Depth Five  |         |        |
+| Depth one   |  0.75   |   0.67 |
+| Depth two   |  1.75   |   1.75 |
+| Depth three |  2.90   |   3.02 |
+| Depth Four  |  5.30   |   5.64 |
+| Depth Five  |   8.9   |   9.76 |
 
-### 
+### ##Evaluation
+
+Indexing on both dbs.
+
+
+
+
+

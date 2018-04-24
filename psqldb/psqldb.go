@@ -17,7 +17,7 @@ func Open() (*sql.DB, error) {
 	return db, err
 }
 
-func GetDepthCount(name string, depth int) int {
+func GetDepthCount(name string, depth int) int64 {
 	checkConn()
 
 	var query string
@@ -44,7 +44,7 @@ func GetDepthCount(name string, depth int) int {
 		log.Panic(err)
 	}
 
-	var count int
+	var count int64
 	for rows.Next() {
 		rows.Scan(&count)
 	}

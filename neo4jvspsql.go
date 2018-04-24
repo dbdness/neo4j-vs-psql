@@ -10,6 +10,7 @@ import (
 	"github.com/johnnadratowski/golang-neo4j-bolt-driver"
 	"os"
 	"strconv"
+	"math"
 )
 
 // Randomly extracted names from the database.
@@ -93,13 +94,15 @@ func neo4jBenchmark(conn golangNeo4jBoltDriver.Conn, depth int, names []string) 
 
 	durations := make([]float64, 0)
 
+	var count int64
 	for _, name := range names {
 		startTime := time.Now()
-		neo4jdb.GetDepthCount(name, depth)
+		count = neo4jdb.GetDepthCount(name, depth)
 		fmt.Print(".") //Activity monitor
 		elapsed := time.Since(startTime)
-		durations = append(durations, elapsed.Seconds())
+		durations = append(durations, round(elapsed.Seconds()))
 	}
+	log.Printf("\nLast count: %d", count)
 
 	//log.Println(durations)
 	fmt.Printf("\nAverage time for depth %d:\n", depth)
@@ -118,13 +121,15 @@ func psqlBenchmark(conn *sql.DB, depth int, names []string) {
 
 	durations := make([]float64, 0)
 
+	var count int64
 	for _, name := range names {
 		startTime := time.Now()
-		psqldb.GetDepthCount(name, depth)
+		count = psqldb.GetDepthCount(name, depth)
 		fmt.Print(".") //Activity monitor
 		elapsed := time.Since(startTime)
-		durations = append(durations, elapsed.Seconds())
+		durations = append(durations, round(elapsed.Seconds()))
 	}
+	log.Printf("\nLast count: %d", count)
 
 	//log.Println(durations)
 	fmt.Printf("\nAverage time for depth %d:\n", depth)
@@ -183,4 +188,9 @@ func calcMedian(slice []float64) float64 {
 	}
 
 	return median
+}
+
+func round(number float64) float64{
+	rounded := math.Round(number*100)/100
+	return rounded
 }
