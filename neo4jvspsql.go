@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"math"
+	"sort"
 )
 
 // Randomly extracted names from the database.
@@ -38,11 +39,11 @@ var randomNames = []string{
 }
 
 func main() {
-	conn, err := psqldb.Open()
-	if err != nil {
-		log.Panic(err)
+	//First command is also an argument
+	if len(os.Args) != 3{
+		printUsage()
+		return
 	}
-	defer conn.Close()
 
 	userCommand := os.Args[1]
 	depthCommand := os.Args[2]
@@ -65,7 +66,7 @@ func main() {
 		//names := neo4jdb.GetRandomName(20)
 		fmt.Println("Starting Neo4j benchmarks:")
 		neo4jBenchmark(conn, depth, randomNames)
-
+		break
 	case "--psql":
 		fmt.Println("Opening PSQL connection...")
 		conn, err := psqldb.Open()
@@ -83,6 +84,10 @@ func main() {
 		//names := psqldb.GetRandomName(20)
 		fmt.Println("Starting PSQL benchmarks:")
 		psqlBenchmark(conn, depth, randomNames)
+		break
+	 default:
+	 	printUsage()
+		break
 	}
 
 }
@@ -149,6 +154,9 @@ func calcAverage(slice []float64) float64 {
 
 func calcMedian(slice []float64) float64 {
 	var median float64
+
+	sort.Float64s(slice)
+
 	middle := len(slice) / 2
 
 	if len(slice)%2 == 1 {
@@ -163,4 +171,8 @@ func calcMedian(slice []float64) float64 {
 func round(number float64) float64{
 	rounded := math.Round(number*100)/100
 	return rounded
+}
+
+func printUsage(){
+	fmt.Println("usage:\n--neo4j [depth]\n--psql [depth]\n\nExample: --neo4j 3")
 }
